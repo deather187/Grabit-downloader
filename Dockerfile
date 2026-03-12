@@ -1,19 +1,20 @@
-FROM node:18-bullseye-slim
+FROM node:18
 
-# Install ffmpeg and python3 (yt-dlp dependencies)
+# Install ffmpeg, python3 and pip (yt-dlp dependencies + build tools)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     python3 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app directory inside the container
 WORKDIR /usr/src/app
 
 # Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
 
-RUN npm install
+# Use omit=dev to avoid installing nodemon or local testing packages that might fail
+RUN npm install --omit=dev
 
 # Bundle app source
 COPY . .
