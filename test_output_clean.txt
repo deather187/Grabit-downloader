@@ -1,0 +1,56 @@
+﻿Testing video info extraction for problematic platforms...
+
+[Twitter/X] https://x.com/SpaceX/status/1768273059154694432
+Γ£à SUCCESS - Title: Video, Extractor: scraper
+---
+[Snapchat] https://story.snapchat.com/p/87c4f4ef-5e06-4074-9549-01584c30cda2/731336465498112
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://story.snapchat.com/p/87c4f4ef-5e06-4074-9549-01584c30cda2/731336465498112 --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [generic] Unable to download webpage: HTTP Error 404: Not Found (caused by <HTTPError 404: Not Found>)
+null
+---
+[Dailymotion] https://www.dailymotion.com/video/x8q09rz
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://www.dailymotion.com/video/x8q09rz --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [dailymotion] x8q09rz: No video formats found!; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+null
+---
+[Rumble] https://rumble.com/v4g0p3r-watch-live-spacex-starship-flight-3.html
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://rumble.com/v4g0p3r-watch-live-spacex-starship-flight-3.html --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [Rumble] v4g0p3r-watch-live-spacex-starship-flight-3.html: Unable to download webpage: HTTP Error 403: Forbidden (caused by <HTTPError 403: Forbidden>)
+null
+---
+[Bilibili] https://www.bilibili.com/video/BV11c411B7yS
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://www.bilibili.com/video/BV11c411B7yS --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [BiliBili] 11c411B7yS: Unable to download JSON metadata: HTTP Error 403: Forbidden (caused by <HTTPError 403: Forbidden>)
+null
+---
+[LinkedIn] https://www.linkedin.com/posts/spacex_starship-flight-3-activity-7174026343543160832-7Gf9
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://www.linkedin.com/posts/spacex_starship-flight-3-activity-7174026343543160832-7Gf9 --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [LinkedIn] 7174026343543160832: Unable to download webpage: HTTP Error 404: Not Found (caused by <HTTPError 404: Not Found>)
+null
+---
+[ok.ru] https://ok.ru/video/7339893951112
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://ok.ru/video/7339893951112 --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [Odnoklassniki] 7339893951112: Unable to extract player; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+null
+---
+[douyin] https://www.douyin.com/video/7332205566088891685
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://www.douyin.com/video/7332205566088891685 --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [Douyin] 7332205566088891685: Fresh cookies (not necessarily logged in) are needed
+null
+---
+[weibo] https://weibo.com/tv/show/1034:5012290466480164
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://weibo.com/tv/show/1034:5012290466480164 --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: 'NoneType' object is not subscriptable
+null
+---
+[9gag] https://9gag.com/gag/aWG02eK
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://9gag.com/gag/aWG02eK --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: [9gag] aWG02eK: Unable to download JSON metadata: Failed to perform, curl: (35) Recv failure: Connection was reset. See https://curl.se/libcurl/c/libcurl-errors.html first for more details. (caused by SSLError('Failed to perform, curl: (35) Recv failure: Connection was reset. See https://curl.se/libcurl/c/libcurl-errors.html first for more details.')); please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+null
+---
+[Threads] https://www.threads.net/@zuck/post/CxX6jRTRP9F
+Γ¥î ERROR - Command failed with exit code 1: C:\Users\Mudasser\Pictures\ai-kids-lesson\video-downloader\node_modules\yt-dlp-exec\bin\yt-dlp.exe https://www.threads.net/@zuck/post/CxX6jRTRP9F --dump-single-json --no-check-certificates --no-warnings --prefer-free-formats --add-header referer:https://www.google.com
+ERROR: Unsupported URL: https://www.threads.com/?error=invalid_post
+null
+---
+[Vk] https://vk.com/video-22822305_456239018

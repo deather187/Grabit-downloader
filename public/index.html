@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrabIt — Universal Video Downloader</title>
+  <meta name="description"
+    content="Download videos, reels, shorts, pins, and threads from 30+ platforms including YouTube, TikTok, Instagram, Twitter/X, Sora 2, and more. Watermark removal included.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+</head>
+
+<body>
+  <!-- Animated background particles -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Grab<span class="logo-accent">It</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#hero" class="nav-link">Home</a>
+        <a href="#platforms" class="nav-link">Platforms</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+      </div>
+      <div class="nav-status" id="navStatus">
+        <span class="status-dot"></span>
+        <span class="status-text">Online</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-pulse"></span>
+        <span>🚀 Supports 30+ Platforms</span>
+      </div>
+      <h1 class="hero-title">
+        Download <span class="text-gradient">Any Video</span><br>
+        From <span class="text-gradient-alt">Any Platform</span>
+      </h1>
+      <p class="hero-subtitle">
+        Videos, Reels, Shorts, Pins, Threads — paste a link and grab it instantly.
+        With built-in watermark removal powered by AI.
+      </p>
+
+      <!-- URL Input -->
+      <div class="input-wrapper" id="inputWrapper">
+        <div class="input-glow"></div>
+        <div class="input-container">
+          <div class="input-icon" id="inputIcon">
+            <span>🔗</span>
+          </div>
+          <input type="url" id="urlInput" class="url-input" placeholder="Paste video URL here..." autocomplete="off"
+            spellcheck="false">
+          <button class="grab-btn" id="grabBtn" disabled>
+            <span class="btn-text">Grab It</span>
+            <span class="btn-icon">→</span>
+          </button>
+        </div>
+        <div class="input-hint" id="inputHint">
+          Supports YouTube, TikTok, Instagram, Twitter/X, Reddit, Pinterest, Sora 2, and 25+ more
+        </div>
+      </div>
+
+      <!-- Scrolling platform marquee -->
+      <div class="hero-marquee-wrapper">
+        <div class="hero-marquee">
+          <div class="hero-marquee-track">
+            <div class="marquee-item" style="--color:#FF0000">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#FF0000">▶</span></div><span
+                class="marquee-name">YouTube</span>
+            </div>
+            <div class="marquee-item" style="--color:#00F2EA">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/tiktok/white" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#00F2EA">♪</span></div><span
+                class="marquee-name">TikTok</span>
+            </div>
+            <div class="marquee-item" style="--color:#E4405F">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/instagram/E4405F" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#E4405F">📷</span></div><span
+                class="marquee-name">Instagram</span>
+            </div>
+            <div class="marquee-item" style="--color:#1877F2">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/facebook/1877F2" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#1877F2">f</span></div><span
+                class="marquee-name">Facebook</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/x/white" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#fff">𝕏</span></div><span
+                class="marquee-name">X</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF4500">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/reddit/FF4500" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#FF4500">⬆</span></div><span
+                class="marquee-name">Reddit</span>
+            </div>
+            <div class="marquee-item" style="--color:#E60023">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/pinterest/E60023" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#E60023">📌</span></div><span
+                class="marquee-name">Pinterest</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/threads/white" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#fff">@</span></div><span
+                class="marquee-name">Threads</span>
+            </div>
+            <div class="marquee-item" style="--color:#FFFC00">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/snapchat/FFFC00" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#FFFC00">👻</span></div><span
+                class="marquee-name">Snapchat</span>
+            </div>
+            <div class="marquee-item" style="--color:#0A66C2">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/linkedin/0A66C2" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#0A66C2">in</span></div><span
+                class="marquee-name">LinkedIn</span>
+            </div>
+            <div class="marquee-item" style="--color:#1AB7EA">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/vimeo/1AB7EA" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#1AB7EA">▷</span></div><span
+                class="marquee-name">Vimeo</span>
+            </div>
+            <div class="marquee-item" style="--color:#9146FF">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/twitch/9146FF" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#9146FF">🎮</span></div><span
+                class="marquee-name">Twitch</span>
+            </div>
+            <div class="marquee-item" style="--color:#10A37F">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/openai/10A37F" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#10A37F">✦</span></div><span
+                class="marquee-name">Sora 2</span>
+            </div>
+            <div class="marquee-item" style="--color:#85C742">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/rumble/85C742" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#85C742">R</span></div><span
+                class="marquee-name">Rumble</span>
+            </div>
+            <div class="marquee-item" style="--color:#00A1D6">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/bilibili/00A1D6" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#00A1D6">B</span></div><span
+                class="marquee-name">Bilibili</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF5500">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/soundcloud/FF5500" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#FF5500">☁</span></div><span
+                class="marquee-name">SoundCloud</span>
+            </div>
+            <div class="marquee-item" style="--color:#4680C2">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/vk/4680C2" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#4680C2">VK</span></div><span
+                class="marquee-name">VK</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF2D55">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/likee/FF2D55" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#FF2D55">❤</span></div><span
+                class="marquee-name">Likee</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF6900">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/kwai/FF6900" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#FF6900">K</span></div><span
+                class="marquee-name">Kwai</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/douyin/white" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#fff">抖</span></div><span
+                class="marquee-name">Douyin</span>
+            </div>
+            <div class="marquee-item" style="--color:#DF2029">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/sinaweibo/DF2029" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#DF2029">微</span></div><span
+                class="marquee-name">Weibo</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/tumblr/white" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#fff">t</span></div><span
+                class="marquee-name">Tumblr</span>
+            </div>
+            <div class="marquee-item" style="--color:#1BB76E">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/imgur/1BB76E" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#1BB76E">📸</span></div><span
+                class="marquee-name">Imgur</span>
+            </div>
+            <div class="marquee-item" style="--color:#E62B1E">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/ted/E62B1E" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#E62B1E">T</span></div><span
+                class="marquee-name">TED</span>
+            </div>
+            <div class="marquee-item" style="--color:#625DF5">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/loom/625DF5" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#625DF5">L</span></div><span
+                class="marquee-name">Loom</span>
+            </div>
+            <div class="marquee-item" style="--color:#2299DD">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/mediafire/2299DD" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#2299DD">🔥</span></div><span
+                class="marquee-name">MediaFire</span>
+            </div>
+          </div>
+          <!-- Duplicate for seamless loop -->
+          <div class="hero-marquee-track" aria-hidden="true">
+            <div class="marquee-item" style="--color:#FF0000">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt=""><span
+                  class="marquee-fallback">▶</span></div><span class="marquee-name">YouTube</span>
+            </div>
+            <div class="marquee-item" style="--color:#00F2EA">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/tiktok/white" alt=""><span
+                  class="marquee-fallback">♪</span></div><span class="marquee-name">TikTok</span>
+            </div>
+            <div class="marquee-item" style="--color:#E4405F">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/instagram/E4405F" alt=""><span
+                  class="marquee-fallback">📷</span></div><span class="marquee-name">Instagram</span>
+            </div>
+            <div class="marquee-item" style="--color:#1877F2">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/facebook/1877F2" alt=""><span
+                  class="marquee-fallback">f</span></div><span class="marquee-name">Facebook</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/x/white" alt=""><span
+                  class="marquee-fallback">𝕏</span></div><span class="marquee-name">X</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF4500">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/reddit/FF4500" alt=""><span
+                  class="marquee-fallback">⬆</span></div><span class="marquee-name">Reddit</span>
+            </div>
+            <div class="marquee-item" style="--color:#E60023">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/pinterest/E60023" alt=""><span
+                  class="marquee-fallback">📌</span></div><span class="marquee-name">Pinterest</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/threads/white" alt=""><span
+                  class="marquee-fallback">@</span></div><span class="marquee-name">Threads</span>
+            </div>
+            <div class="marquee-item" style="--color:#FFFC00">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/snapchat/FFFC00" alt=""><span
+                  class="marquee-fallback">👻</span></div><span class="marquee-name">Snapchat</span>
+            </div>
+            <div class="marquee-item" style="--color:#0A66C2">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/linkedin/0A66C2" alt=""><span
+                  class="marquee-fallback">in</span></div><span class="marquee-name">LinkedIn</span>
+            </div>
+            <div class="marquee-item" style="--color:#1AB7EA">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/vimeo/1AB7EA" alt=""><span
+                  class="marquee-fallback">▷</span></div><span class="marquee-name">Vimeo</span>
+            </div>
+            <div class="marquee-item" style="--color:#9146FF">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/twitch/9146FF" alt=""><span
+                  class="marquee-fallback">🎮</span></div><span class="marquee-name">Twitch</span>
+            </div>
+            <div class="marquee-item" style="--color:#10A37F">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/openai/10A37F" alt=""><span
+                  class="marquee-fallback">✦</span></div><span class="marquee-name">Sora 2</span>
+            </div>
+            <div class="marquee-item" style="--color:#85C742">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/rumble/85C742" alt=""><span
+                  class="marquee-fallback">R</span></div><span class="marquee-name">Rumble</span>
+            </div>
+            <div class="marquee-item" style="--color:#00A1D6">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/bilibili/00A1D6" alt=""><span
+                  class="marquee-fallback">B</span></div><span class="marquee-name">Bilibili</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF5500">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/soundcloud/FF5500" alt=""><span
+                  class="marquee-fallback">☁</span></div><span class="marquee-name">SoundCloud</span>
+            </div>
+            <div class="marquee-item" style="--color:#4680C2">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/vk/4680C2" alt=""><span
+                  class="marquee-fallback">VK</span></div><span class="marquee-name">VK</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF2D55">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/likee/FF2D55" alt=""><span
+                  class="marquee-fallback">❤</span></div><span class="marquee-name">Likee</span>
+            </div>
+            <div class="marquee-item" style="--color:#FF6900">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/kwai/FF6900" alt=""><span
+                  class="marquee-fallback">K</span></div><span class="marquee-name">Kwai</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/douyin/white" alt=""><span
+                  class="marquee-fallback">抖</span></div><span class="marquee-name">Douyin</span>
+            </div>
+            <div class="marquee-item" style="--color:#DF2029">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/sinaweibo/DF2029" alt=""><span
+                  class="marquee-fallback">微</span></div><span class="marquee-name">Weibo</span>
+            </div>
+            <div class="marquee-item" style="--color:#fff">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/tumblr/white" alt=""><span
+                  class="marquee-fallback">t</span></div><span class="marquee-name">Tumblr</span>
+            </div>
+            <div class="marquee-item" style="--color:#1BB76E">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/imgur/1BB76E" alt=""><span
+                  class="marquee-fallback">📸</span></div><span class="marquee-name">Imgur</span>
+            </div>
+            <div class="marquee-item" style="--color:#E62B1E">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/ted/E62B1E" alt=""><span
+                  class="marquee-fallback">T</span></div><span class="marquee-name">TED</span>
+            </div>
+            <div class="marquee-item" style="--color:#625DF5">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/loom/625DF5" alt=""><span
+                  class="marquee-fallback">L</span></div><span class="marquee-name">Loom</span>
+            </div>
+            <div class="marquee-item" style="--color:#2299DD">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/mediafire/2299DD" alt=""><span
+                  class="marquee-fallback">🔥</span></div><span class="marquee-name">MediaFire</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Bar -->
+  <section class="stats-bar">
+    <div class="stats-container">
+      <div class="stat-item">
+        <span class="stat-value" data-count="32">0</span>
+        <span class="stat-label">Platforms</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value" data-count="1000">0</span>
+        <span class="stat-label">Sites Supported</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">4K</span>
+        <span class="stat-label">Max Quality</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">∞</span>
+        <span class="stat-label">Free Forever</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platforms Section -->
+  <section class="platforms-section" id="platforms">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Platforms</span>
+        <h2 class="section-title">Every Platform. <span class="text-gradient">One Tool.</span></h2>
+        <p class="section-subtitle">From major social networks to niche video hosts — we've got them all covered.</p>
+      </div>
+      <div class="platforms-grid" id="platformsGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Features</span>
+        <h2 class="section-title">Power-Packed <span class="text-gradient-alt">Features</span></h2>
+        <p class="section-subtitle">Everything you need to download, convert, and clean up videos from anywhere.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" data-feature="watermark">
+          <div class="feature-icon-wrap">
+            <span class="feature-icon">🧹</span>
+            <div class="feature-icon-glow"></div>
+          </div>
+          <h3 class="feature-title">Watermark Removal</h3>
+          <p class="feature-desc">AI-powered watermark detection and removal for TikTok, Sora 2, Douyin, Kwai, and more.
+            Get clean, professional videos.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">FFmpeg</span>
+            <span class="feature-tag">AI-Detect</span>
+            <span class="feature-tag">Lossless</span>
+          </div>
+        </div>
+        <div class="feature-card" data-feature="quality">
+          <div class="feature-icon-wrap">
+            <span class="feature-icon">🎬</span>
+            <div class="feature-icon-glow"></div>
+          </div>
+          <h3 class="feature-title">Quality Selection</h3>
+          <p class="feature-desc">Choose from 4K, 1080p, 720p, 480p, or audio-only. Download in the exact quality you
+            need for any project.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">4K UHD</span>
+            <span class="feature-tag">1080p</span>
+            <span class="feature-tag">Audio</span>
+          </div>
+        </div>
+        <div class="feature-card" data-feature="speed">
+          <div class="feature-icon-wrap">
+            <span class="feature-icon">⚡</span>
+            <div class="feature-icon-glow"></div>
+          </div>
+          <h3 class="feature-title">Lightning Fast</h3>
+          <p class="feature-desc">Optimized download pipeline with parallel processing. Get your videos in seconds, not
+            minutes.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Fast</span>
+            <span class="feature-tag">Parallel</span>
+            <span class="feature-tag">Optimized</span>
+          </div>
+        </div>
+        <div class="feature-card" data-feature="universal">
+          <div class="feature-icon-wrap">
+            <span class="feature-icon">🌐</span>
+            <div class="feature-icon-glow"></div>
+          </div>
+          <h3 class="feature-title">Universal Support</h3>
+          <p class="feature-desc">One tool for everything — videos, reels, shorts, pins, threads, stories, clips, and
+            live streams from 30+ platforms.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Reels</span>
+            <span class="feature-tag">Shorts</span>
+            <span class="feature-tag">Stories</span>
+          </div>
+        </div>
+        <div class="feature-card" data-feature="sora">
+          <div class="feature-icon-wrap">
+            <span class="feature-icon">✦</span>
+            <div class="feature-icon-glow"></div>
+          </div>
+          <h3 class="feature-title">Sora 2 Support</h3>
+          <p class="feature-desc">Download AI-generated videos from OpenAI's Sora 2 with automatic watermark detection
+            and removal.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">OpenAI</span>
+            <span class="feature-tag">AI Video</span>
+            <span class="feature-tag">New!</span>
+          </div>
+        </div>
+        <div class="feature-card" data-feature="privacy">
+          <div class="feature-icon-wrap">
+            <span class="feature-icon">🔒</span>
+            <div class="feature-icon-glow"></div>
+          </div>
+          <h3 class="feature-title">100% Private</h3>
+          <p class="feature-desc">Runs locally on your machine. No data sent to third parties. Your downloads stay your
+            business.</p>
+          <div class="feature-tags">
+            <span class="feature-tag">Local</span>
+            <span class="feature-tag">No Tracking</span>
+            <span class="feature-tag">Secure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-section" id="how-it-works">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">How It Works</span>
+        <h2 class="section-title">Three Simple <span class="text-gradient">Steps</span></h2>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon">📋</div>
+          <h3 class="step-title">Paste URL</h3>
+          <p class="step-desc">Copy the video URL from any supported platform and paste it in the input box above.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="60" height="20" viewBox="0 0 60 20">
+            <path d="M0 10 L50 10 L45 5 M50 10 L45 15" stroke="currentColor" fill="none" stroke-width="2" />
+          </svg>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon">⚙️</div>
+          <h3 class="step-title">Choose Options</h3>
+          <p class="step-desc">Select quality, toggle watermark removal, and pick your preferred format.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="60" height="20" viewBox="0 0 60 20">
+            <path d="M0 10 L50 10 L45 5 M50 10 L45 15" stroke="currentColor" fill="none" stroke-width="2" />
+          </svg>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon">⬇️</div>
+          <h3 class="step-title">Download</h3>
+          <p class="step-desc">Hit download and your video will be saved instantly to your device.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Grab<span class="logo-accent">It</span></span>
+      </div>
+      <p class="footer-disclaimer">
+        This tool is for personal use only. Please respect copyright laws and the terms of service of each platform.
+        We do not host, store, or distribute any content.
+      </p>
+      <div class="footer-bottom">
+        <span>© 2026 GrabIt. Made by killerbhai</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Download Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="downloadModal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-loading" id="modalLoading">
+        <div class="spinner"></div>
+        <p>Fetching video info...</p>
+      </div>
+      <div class="modal-content" id="modalContent" style="display:none">
+        <div class="modal-header">
+          <div class="modal-platform" id="modalPlatform">
+            <span class="modal-platform-icon" id="modalPlatformIcon"></span>
+            <span class="modal-platform-name" id="modalPlatformName"></span>
+          </div>
+        </div>
+        <div class="modal-preview">
+          <img id="modalThumbnail" alt="Video thumbnail" class="modal-thumb">
+          <div class="modal-duration" id="modalDuration"></div>
+        </div>
+        <h3 class="modal-title" id="modalTitle"></h3>
+        <p class="modal-uploader" id="modalUploader"></p>
+
+        <div class="modal-options">
+          <div class="option-group">
+            <label class="option-label">Quality</label>
+            <div class="format-selector" id="formatSelector">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="option-group">
+            <label class="option-label">Watermark Removal</label>
+            <div class="toggle-wrapper">
+              <label class="toggle" id="watermarkToggle">
+                <input type="checkbox" id="watermarkCheckbox">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="watermarkLabel">Off</span>
+            </div>
+            <p class="option-hint" id="watermarkHint">Remove platform watermarks from the video</p>
+          </div>
+        </div>
+
+        <button class="download-btn" id="downloadBtn">
+          <span class="dl-icon">⬇</span>
+          <span class="dl-text">Download Now</span>
+        </button>
+
+        <div class="download-progress" id="downloadProgress" style="display:none">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="progress-text" id="progressText">Preparing download...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

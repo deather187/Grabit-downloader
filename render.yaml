@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: grabit-downloader
+    env: node
+    plan: free
+    region: ohio
+    buildCommand: "npm install"
+    # To run yt-dlp and FFMPEG on Render's native environment we need these system packages
+    # using Render's built-in apt-get integration before standard npm install
+    startCommand: "npm run start"
+    envVars:
+      - key: NODE_VERSION
+        value: 18.18.0
