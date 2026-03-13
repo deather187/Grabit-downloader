@@ -105,17 +105,7 @@ function renderFallbackPlatforms() {
         { icon: '🎮', logo: 'https://cdn.simpleicons.org/twitch/9146FF', name: 'Twitch', color: '#9146FF' },
         { icon: '✦', logo: 'https://cdn.simpleicons.org/openai/10A37F', name: 'Sora 2', color: '#10A37F', hasWatermark: true },
         { icon: '☁', logo: 'https://cdn.simpleicons.org/soundcloud/FF5500', name: 'SoundCloud', color: '#FF5500' },
-        { icon: 'VK', logo: 'https://cdn.simpleicons.org/vk/4680C2', name: 'VK', color: '#4680C2' },
-        { icon: '❤', logo: 'https://cdn.simpleicons.org/likee/FF2D55', name: 'Likee', color: '#FF2D55', hasWatermark: true },
-        { icon: 'K', logo: 'https://cdn.simpleicons.org/kwai/FF6900', name: 'Kwai', color: '#FF6900', hasWatermark: true },
-        { icon: 't', logo: 'https://cdn.simpleicons.org/tumblr/white', name: 'Tumblr', color: '#36465D' },
         { icon: '📸', logo: 'https://cdn.simpleicons.org/imgur/1BB76E', name: 'Imgur', color: '#1BB76E' },
-        { icon: 'S', logo: 'https://cdn.simpleicons.org/streamable/0F90FA', name: 'Streamable', color: '#0F90FA' },
-        { icon: '♫', logo: 'https://cdn.simpleicons.org/bandcamp/629AA9', name: 'Bandcamp', color: '#629AA9' },
-        { icon: 'T', logo: 'https://cdn.simpleicons.org/ted/E62B1E', name: 'TED', color: '#E62B1E' },
-        { icon: 'C', logo: 'https://cdn.simpleicons.org/coub/1DA1F2', name: 'Coub', color: '#1DA1F2' },
-        { icon: 'L', logo: 'https://cdn.simpleicons.org/loom/625DF5', name: 'Loom', color: '#625DF5' },
-        { icon: '🔥', logo: 'https://cdn.simpleicons.org/mediafire/2299DD', name: 'MediaFire', color: '#2299DD' },
     ];
     renderPlatforms(fallback);
 }
@@ -182,7 +172,6 @@ function detectPlatformFromUrl(url) {
         { patterns: [/twitch\.tv/], icon: '🎮', logo: 'https://cdn.simpleicons.org/twitch/9146FF', name: 'Twitch', color: '#9146FF' },
         { patterns: [/sora\.com/, /sora\.chatgpt\.com/, /openai\.com.*sora/, /cdn\.openai\.com/], icon: '✦', logo: 'https://cdn.simpleicons.org/openai/10A37F', name: 'Sora 2', color: '#10A37F' },
         { patterns: [/soundcloud\.com/], icon: '☁', logo: 'https://cdn.simpleicons.org/soundcloud/FF5500', name: 'SoundCloud', color: '#FF5500' },
-        { patterns: [/tumblr\.com/], icon: 't', logo: 'https://cdn.simpleicons.org/tumblr/white', name: 'Tumblr', color: '#36465D' },
         { patterns: [/imgur\.com/], icon: '📸', logo: 'https://cdn.simpleicons.org/imgur/1BB76E', name: 'Imgur', color: '#1BB76E' },
     ];
 
