@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const { getVideoInfo, downloadVideo } = require('./utils/downloader');
+const { getMediaInfo } = require('./utils/media-scraper');
 const { detectPlatform, PLATFORMS } = require('./utils/platforms');
 const { removeWatermark, checkFFmpeg } = require('./utils/watermark');
 
@@ -53,14 +54,31 @@ app.post('/api/info', async (req, res) => {
     const platform = detectPlatform(url);
 
     try {
+        let resultInfo = null;
+        let isSuccess = false;
+
         const info = await getVideoInfo(url);
-        if (info.success) {
-            info.data.platform = platform
+        if (info.success && info.data.formats && info.data.formats.length > 0) {
+            resultInfo = info;
+            isSuccess = true;
+        } else {
+            // Try gallery-dl fallback for images / carousels / posts
+            const mediaInfo = await getMediaInfo(url);
+            if (mediaInfo.success && mediaInfo.data.images.length > 0) {
+                resultInfo = mediaInfo;
+                isSuccess = true;
+            } else {
+                resultInfo = info; // Keep original video extraction error
+            }
+        }
+
+        if (isSuccess) {
+            resultInfo.data.platform = platform
                 ? { id: platform.id, name: platform.name, icon: platform.icon, color: platform.color, hasWatermark: !!platform.watermarkPosition }
                 : { id: 'unknown', name: 'Unknown', icon: '🌐', color: '#888888', hasWatermark: false };
-            res.json(info);
+            res.json(resultInfo);
         } else {
-            res.status(422).json(info);
+            res.status(422).json(resultInfo);
         }
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -137,6 +155,39 @@ app.get('/api/health', async (req, res) => {
         ffmpeg: ffmpegOk,
         platforms: PLATFORMS.length,
         timestamp: new Date().toISOString(),
+    });
+});
+
+/**
+ * GET /api/proxy — proxy image downloads to bypass CORS
+ */
+app.get('/api/proxy', async (req, res) => {
+    const targetUrl = req.query.url;
+    const name = req.query.name || 'image';
+    if (!targetUrl) return res.status(400).send('No URL provided');
+
+    const https = require('https');
+    const http = require('http');
+    const client = targetUrl.startsWith('https') ? https : http;
+
+    const options = {
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            // Gallery-dl urls sometimes require the exact referer
+            'Referer': targetUrl
+        }
+    };
+
+    client.get(targetUrl, options, (proxyRes) => {
+        if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
+            // Handle redirect
+            return res.redirect(proxyRes.headers.location);
+        }
+        res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'image/jpeg');
+        res.setHeader('Content-Disposition', `attachment; filename="${name}.jpg"`);
+        proxyRes.pipe(res);
+    }).on('error', (err) => {
+        res.status(500).send('Error proxying image');
     });
 });
 

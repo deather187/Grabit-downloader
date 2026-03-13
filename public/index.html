@@ -559,21 +559,24 @@
           </div>
         </div>
         <div class="modal-preview">
-          <img id="modalThumbnail" alt="Video thumbnail" class="modal-thumb">
+          <img id="modalThumbnail" alt="Video/Media thumbnail" class="modal-thumb">
           <div class="modal-duration" id="modalDuration"></div>
+          <div class="modal-gallery-badge" id="modalGalleryBadge" style="display:none">
+            <span class="gallery-icon">🖼️</span> <span id="galleryCount">5 Images</span>
+          </div>
         </div>
         <h3 class="modal-title" id="modalTitle"></h3>
         <p class="modal-uploader" id="modalUploader"></p>
 
         <div class="modal-options">
-          <div class="option-group">
+          <div class="option-group" id="videoQualityGroup">
             <label class="option-label">Quality</label>
             <div class="format-selector" id="formatSelector">
               <!-- Populated by JS -->
             </div>
           </div>
 
-          <div class="option-group">
+          <div class="option-group" id="videoWatermarkGroup">
             <label class="option-label">Watermark Removal</label>
             <div class="toggle-wrapper">
               <label class="toggle" id="watermarkToggle">
@@ -583,6 +586,14 @@
               <span class="toggle-label" id="watermarkLabel">Off</span>
             </div>
             <p class="option-hint" id="watermarkHint">Remove platform watermarks from the video</p>
+          </div>
+
+          <div class="option-group" id="galleryOptionsGroup" style="display:none">
+            <label class="option-label">Gallery Highlights</label>
+            <div class="gallery-preview-grid" id="galleryPreviewGrid">
+              <!-- Populated by JS -->
+            </div>
+            <p class="option-hint">High-resolution scraped images. Click download to fetch all.</p>
           </div>
         </div>
 

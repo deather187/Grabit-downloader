@@ -1529,3 +1529,65 @@ a {
     font-size: 1.5rem;
   }
 }
+
+/* --- Gallery Styles --- */
+.modal-gallery-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gallery-preview-grid {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 5px 0 15px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light) transparent;
+}
+
+.gallery-preview-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gallery-preview-grid::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+.gallery-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  flex-shrink: 0;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+.gallery-thumb:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.gallery-thumb:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.gallery-thumb:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.gallery-thumb:nth-child(4) {
+  animation-delay: 0.4s;
+}

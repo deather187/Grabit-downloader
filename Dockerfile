@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     python-is-python3 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install gallery-dl for scraping non-video media formats
+RUN pip3 install gallery-dl --break-system-packages || pip3 install gallery-dl
+
 # Create app directory inside the container
 WORKDIR /usr/src/app
 
