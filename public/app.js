@@ -274,48 +274,24 @@ function renderVideoInfo(info) {
     $('#modalTitle').textContent = info.title || 'Untitled Video';
     $('#modalUploader').textContent = info.uploader ? `by ${info.uploader}` : '';
 
-    if (info.isGallery) {
-        // --- Image Gallery Mode ---
-        $('#modalGalleryBadge').style.display = 'flex';
-        $('#galleryCount').textContent = `${info.images.length} Images`;
-        $('#videoQualityGroup').style.display = 'none';
-        $('#videoWatermarkGroup').style.display = 'none';
-        $('#galleryOptionsGroup').style.display = 'block';
+    // --- Video Mode ---
+    $('#videoQualityGroup').style.display = 'block';
+    $('#videoWatermarkGroup').style.display = 'block';
+    $('.dl-text').textContent = 'Download Now';
 
-        const grid = $('#galleryPreviewGrid');
-        grid.innerHTML = '';
-        info.images.slice(0, 12).forEach((imgUrl) => {
-            const img = document.createElement('img');
-            img.src = imgUrl;
-            img.className = 'gallery-thumb';
-            // Fallback for CORS restricted thumbnails, route to proxy
-            img.onerror = () => { img.src = `/api/proxy?url=${encodeURIComponent(imgUrl)}`; };
-            grid.appendChild(img);
-        });
+    // Format buttons
+    renderFormats(info.formats || []);
 
-        $('.dl-text').textContent = `Download All (${info.images.length})`;
+    // Watermark toggle
+    const hasWM = platform.hasWatermark;
+    watermarkCheckbox.checked = hasWM;
+    watermarkLabel.textContent = hasWM ? 'On' : 'Off';
+    if (hasWM) {
+        watermarkHint.textContent = `${platform.name} watermark will be automatically removed`;
+        watermarkHint.style.color = 'var(--accent-green)';
     } else {
-        // --- Video Mode ---
-        $('#modalGalleryBadge').style.display = 'none';
-        $('#videoQualityGroup').style.display = 'block';
-        $('#videoWatermarkGroup').style.display = 'block';
-        $('#galleryOptionsGroup').style.display = 'none';
-        $('.dl-text').textContent = 'Download Now';
-
-        // Format buttons
-        renderFormats(info.formats || []);
-
-        // Watermark toggle
-        const hasWM = platform.hasWatermark;
-        watermarkCheckbox.checked = hasWM;
-        watermarkLabel.textContent = hasWM ? 'On' : 'Off';
-        if (hasWM) {
-            watermarkHint.textContent = `${platform.name} watermark will be automatically removed`;
-            watermarkHint.style.color = 'var(--accent-green)';
-        } else {
-            watermarkHint.textContent = 'Remove platform watermarks from the video';
-            watermarkHint.style.color = '';
-        }
+        watermarkHint.textContent = 'Remove platform watermarks from the video';
+        watermarkHint.style.color = '';
     }
 
     // Reset download state
@@ -362,36 +338,7 @@ async function onDownload() {
     progressFill.style.width = '0%';
     progressText.textContent = 'Starting download...';
 
-    if (currentVideoInfo.isGallery) {
-        // --- Handle Gallery Download ---
-        try {
-            const images = currentVideoInfo.images;
-            for (let i = 0; i < images.length; i++) {
-                progressFill.style.width = `${((i + 1) / images.length) * 100}%`;
-                progressText.textContent = `Downloading image ${i + 1} of ${images.length}...`;
 
-                const a = document.createElement('a');
-                // Use backend proxy to force download and bypass CORS
-                a.href = `/api/proxy?url=${encodeURIComponent(images[i])}&name=gallery_image_${i + 1}`;
-                a.download = `gallery_image_${i + 1}.jpg`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                // Small delay to prevent browser overload and popup blocks
-                await new Promise(r => setTimeout(r, 600));
-            }
-            progressText.textContent = 'All images downloaded!';
-            showToast('Gallery downloaded successfully!', 'success');
-            setTimeout(() => hideModal(), 1500);
-        } catch (err) {
-            showToast('Download failed', 'error');
-        } finally {
-            isDownloading = false;
-            downloadBtn.disabled = false;
-        }
-        return;
-    }
 
     // Simulate progress
     let progress = 0;

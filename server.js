@@ -4,7 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const { getVideoInfo, downloadVideo } = require('./utils/downloader');
-const { getMediaInfo } = require('./utils/media-scraper');
 const { detectPlatform, PLATFORMS } = require('./utils/platforms');
 const { removeWatermark, checkFFmpeg } = require('./utils/watermark');
 
@@ -59,30 +58,11 @@ app.post('/api/info', async (req, res) => {
 
         const info = await getVideoInfo(url);
 
-        let shouldTryGallery = false;
-        if (!info.success || !info.data.formats || info.data.formats.length === 0) {
-            shouldTryGallery = true;
-        } else if (url.includes('imgur.com/gallery') || url.includes('imgur.com/a/')) {
-            // yt-dlp parses Imgur galleries as a single dummy video, force gallery-dl
-            shouldTryGallery = true;
-        } else {
+        if (info.success && info.data.formats && info.data.formats.length > 0) {
             resultInfo = info;
             isSuccess = true;
-        }
-
-        if (shouldTryGallery) {
-            // Try gallery-dl fallback for images / carousels / posts
-            const mediaInfo = await getMediaInfo(url);
-            if (mediaInfo.success && mediaInfo.data.images && mediaInfo.data.images.length > 0) {
-                resultInfo = mediaInfo;
-                isSuccess = true;
-            } else if (info && info.success) {
-                // If gallery-dl fails but yt-dlp succeeded, use yt-dlp result
-                resultInfo = info;
-                isSuccess = true;
-            } else {
-                resultInfo = info; // Keep original video extraction error
-            }
+        } else {
+            resultInfo = info; // Keep original video extraction error
         }
 
         if (isSuccess) {
