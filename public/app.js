@@ -41,8 +41,24 @@ document.addEventListener('DOMContentLoaded', () => {
     initCountAnimations();
     initModalListeners();
     initWatermarkToggle();
+    initNavToggle();
+    initShareButtons();
     checkServerHealth();
 });
+
+// ─── Dynamic platform counts (single source of truth: /api/platforms) ──
+function updatePlatformCounts(n) {
+    if (!n || n < 1) return;
+    const hero = $('#heroPlatformCount');
+    if (hero) hero.textContent = `Supports ${n} Platforms`;
+    const uni = $('#universalPlatformCount');
+    if (uni) uni.textContent = n;
+    const stat = $('#statPlatforms');
+    if (stat) {
+        stat.dataset.count = n;
+        stat.textContent = n;
+    }
+}
 
 // ─── Particles Background ───────────────────────────────
 function initParticles() {
@@ -68,6 +84,7 @@ async function loadPlatforms() {
         const data = await res.json();
         if (data.success) {
             renderPlatforms(data.platforms);
+            updatePlatformCounts(data.platforms.length);
         }
     } catch {
         renderFallbackPlatforms();
@@ -146,7 +163,7 @@ function onUrlChange() {
         }
     } else {
         inputIcon.innerHTML = '<span>🔗</span>';
-        inputHint.textContent = 'Supports YouTube, TikTok, Instagram, Twitter/X, Reddit, Pinterest, Sora 2, and 25+ more';
+        inputHint.textContent = 'YouTube · TikTok · Instagram · Facebook · Reddit · Pinterest · Vimeo · Twitch · Sora 2 · SoundCloud · Imgur';
         inputHint.style.color = '';
     }
 }
@@ -183,6 +200,37 @@ function detectPlatformFromUrl(url) {
     return null;
 }
 
+// ─── Honest loading messages (fetching can take 10–60s) ──────────────
+let loadingMsgInterval = null;
+const loadingMessages = [
+    ['Fetching video info...', 'Talking to the platform — this usually takes 10–60 seconds.'],
+    ['Still working...', 'Some platforms are slower to respond. Hang tight.'],
+    ['Almost there...', 'Parsing the available qualities and formats.'],
+];
+
+function startLoadingMessages() {
+    stopLoadingMessages();
+    let i = 0;
+    const main = $('#loadingMainText');
+    const sub = $('#loadingSubText');
+    loadingMsgInterval = setInterval(() => {
+        i = (i + 1) % loadingMessages.length;
+        if (main) main.textContent = loadingMessages[i][0];
+        if (sub) sub.textContent = loadingMessages[i][1];
+    }, 12000);
+}
+
+function stopLoadingMessages() {
+    if (loadingMsgInterval) {
+        clearInterval(loadingMsgInterval);
+        loadingMsgInterval = null;
+    }
+    const main = $('#loadingMainText');
+    const sub = $('#loadingSubText');
+    if (main) main.textContent = loadingMessages[0][0];
+    if (sub) sub.textContent = loadingMessages[0][1];
+}
+
 // ─── Grab Action ────────────────────────────────────────
 async function onGrab() {
     const url = urlInput.value.trim();
@@ -190,6 +238,7 @@ async function onGrab() {
 
     showModal();
     showLoading(true);
+    startLoadingMessages();
 
     try {
         const res = await fetch('/api/info', {
@@ -199,6 +248,7 @@ async function onGrab() {
         });
 
         const data = await res.json();
+        stopLoadingMessages();
 
         if (data.success) {
             currentVideoInfo = data.data;
@@ -209,6 +259,7 @@ async function onGrab() {
             showToast(data.error || 'Failed to fetch video info', 'error');
         }
     } catch (err) {
+        stopLoadingMessages();
         hideModal();
         showToast('Network error. Make sure the server is running.', 'error');
     }
@@ -234,6 +285,9 @@ function showModal() {
 function hideModal() {
     modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
+    stopLoadingMessages();
+    const nudge = $('#shareNudge');
+    if (nudge) nudge.style.display = 'none';
     setTimeout(() => {
         showLoading(true);
         downloadProgress.style.display = 'none';
@@ -328,7 +382,7 @@ function initWatermarkToggle() {
     });
 }
 
-// ─── Download ───────────────────────────────────────────
+// ─── Download (real byte-level progress, no fake bar) ────────────────
 async function onDownload() {
     if (!currentVideoInfo || isDownloading) return;
 
@@ -336,27 +390,8 @@ async function onDownload() {
     downloadBtn.disabled = true;
     downloadProgress.style.display = 'block';
     progressFill.style.width = '0%';
+    progressFill.classList.remove('indeterminate');
     progressText.textContent = 'Starting download...';
-
-
-
-    // Simulate progress
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-        progress += Math.random() * 8;
-        if (progress > 90) progress = 90;
-        progressFill.style.width = `${progress}%`;
-
-        if (progress < 30) {
-            progressText.textContent = 'Downloading video...';
-        } else if (progress < 60) {
-            progressText.textContent = watermarkCheckbox.checked
-                ? 'Processing watermark removal...'
-                : 'Processing video...';
-        } else {
-            progressText.textContent = 'Almost ready...';
-        }
-    }, 500);
 
     try {
         const response = await fetch('/api/download', {
@@ -369,43 +404,66 @@ async function onDownload() {
             }),
         });
 
-        clearInterval(progressInterval);
-
-        if (response.ok) {
-            progressFill.style.width = '100%';
-            progressText.textContent = 'Download complete! Saving file...';
-
-            // Trigger file save
-            const blob = await response.blob();
-            const contentDisposition = response.headers.get('Content-Disposition');
-            let fileName = currentVideoInfo.title
-                ? `${currentVideoInfo.title}.mp4`
-                : 'video.mp4';
-
-            if (contentDisposition) {
-                const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-                if (match) {
-                    fileName = match[1].replace(/['"]/g, '');
-                }
-            }
-
-            const downloadUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = downloadUrl;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(downloadUrl);
-
-            showToast('Video downloaded successfully!', 'success');
-            setTimeout(() => hideModal(), 1500);
-        } else {
+        if (!response.ok) {
             const errData = await response.json().catch(() => ({}));
             throw new Error(errData.error || 'Download failed');
         }
+
+        // Stream the body so the progress bar reflects real bytes received
+        const total = parseInt(response.headers.get('Content-Length') || '0', 10);
+        const reader = response.body.getReader();
+        const chunks = [];
+        let received = 0;
+
+        if (!(total > 0)) progressFill.classList.add('indeterminate');
+
+        for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            received += value.length;
+            if (total > 0) {
+                const pct = Math.min(100, Math.round((received / total) * 100));
+                progressFill.style.width = pct + '%';
+                progressText.textContent = `Downloading... ${pct}% (${formatBytes(received)} of ${formatBytes(total)})`;
+            } else {
+                progressText.textContent = `Downloading... ${formatBytes(received)} received`;
+            }
+        }
+
+        progressFill.classList.remove('indeterminate');
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Download complete! Saving file...';
+
+        // Trigger file save
+        const blob = new Blob(chunks);
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let fileName = currentVideoInfo.title
+            ? `${currentVideoInfo.title}.mp4`
+            : 'video.mp4';
+
+        if (contentDisposition) {
+            const match = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            if (match) {
+                fileName = match[1].replace(/['"]/g, '');
+            }
+        }
+
+        const downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(downloadUrl);
+
+        showToast('Video downloaded successfully!', 'success');
+        // Viral loop: invite a share right after a successful download
+        const nudge = $('#shareNudge');
+        if (nudge) nudge.style.display = 'block';
     } catch (err) {
-        clearInterval(progressInterval);
+        progressFill.classList.remove('indeterminate');
         progressFill.style.width = '0%';
         progressText.textContent = 'Download failed';
         showToast(err.message || 'Download failed', 'error');
@@ -413,6 +471,86 @@ async function onDownload() {
         isDownloading = false;
         downloadBtn.disabled = false;
     }
+}
+
+function formatBytes(b) {
+    if (!b || b < 1024) return `${b || 0} B`;
+    const units = ['KB', 'MB', 'GB'];
+    let i = -1;
+    do {
+        b /= 1024;
+        i++;
+    } while (b >= 1024 && i < units.length - 1);
+    return `${b.toFixed(1)} ${units[i]}`;
+}
+
+// ─── Mobile nav toggle ──────────────────────────────────────────
+function initNavToggle() {
+    const toggle = $('#navToggle');
+    const links = $('#navLinks');
+    if (!toggle || !links) return;
+    const close = () => {
+        links.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open menu');
+    };
+    toggle.addEventListener('click', () => {
+        const open = links.classList.toggle('open');
+        toggle.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    links.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+}
+
+// ─── Share buttons (viral loop) ─────────────────────────────────
+const SITE_URL = 'https://grabit-downloader-production-93f2.up.railway.app/';
+const SHARE_TEXT = 'GrabIt — download videos from any platform. Free, no sign-up.';
+
+function getShareLinks() {
+    const url = encodeURIComponent(SITE_URL);
+    const text = encodeURIComponent(SHARE_TEXT);
+    return {
+        whatsapp: `https://wa.me/?text=${text}%20${url}`,
+        x: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+        telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+    };
+}
+
+function initShareButtons() {
+    const links = getShareLinks();
+    const anchorMap = {
+        shareWhatsApp: links.whatsapp,
+        shareX: links.x,
+        shareTelegram: links.telegram,
+        shareFacebook: links.facebook,
+    };
+    Object.entries(anchorMap).forEach(([id, href]) => {
+        const el = document.getElementById(id);
+        if (el) el.href = href;
+    });
+
+    const copyLink = async () => {
+        try {
+            await navigator.clipboard.writeText(SITE_URL);
+            showToast('Link copied! Share it anywhere.', 'success');
+        } catch {
+            showToast('Copy failed — please copy the URL manually.', 'error');
+        }
+    };
+    const copyBtn = $('#shareCopy');
+    if (copyBtn) copyBtn.addEventListener('click', copyLink);
+    const nudgeCopy = $('#nudgeCopy');
+    if (nudgeCopy) nudgeCopy.addEventListener('click', copyLink);
+
+    const openShare = (id, href) => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', () => window.open(href, '_blank', 'noopener'));
+    };
+    openShare('nudgeWhatsApp', links.whatsapp);
+    openShare('nudgeX', links.x);
 }
 
 // ─── Scroll Effects ─────────────────────────────────────
@@ -435,7 +573,7 @@ function initScrollEffects() {
         { threshold: 0.1 }
     );
 
-    $$('.feature-card, .step-card, .platform-card').forEach((el) => {
+    $$('.feature-card, .step-card, .platform-card, .faq-item').forEach((el) => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out)';
@@ -504,6 +642,7 @@ async function checkServerHealth() {
         if (data.status === 'ok') {
             const statusText = $('.status-text');
             statusText.textContent = `Online · ${data.platforms} platforms`;
+            updatePlatformCounts(data.platforms);
             if (!data.ffmpeg) {
                 showToast('FFmpeg not detected. Watermark removal may be limited.', 'info');
             }

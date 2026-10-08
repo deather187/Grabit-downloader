@@ -4,17 +4,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GrabIt — Universal Video Downloader</title>
+  <title>GrabIt — Free Universal Video Downloader (No Sign-Up)</title>
   <meta name="description"
-    content="Download videos, reels, shorts, pins, and threads from 30+ platforms including YouTube, TikTok, Instagram, Twitter/X, Sora 2, and more. Watermark removal included.">
+    content="Download videos, reels, shorts & audio from YouTube, TikTok, Instagram, Facebook, Reddit, Pinterest, Vimeo, Twitch, Sora 2, SoundCloud and Imgur. Free, fast, no sign-up.">
+  <link rel="canonical" href="https://grabit-downloader-production-93f2.up.railway.app/">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="robots" content="index, follow">
+  <!-- Open Graph / social share -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="GrabIt">
+  <meta property="og:title" content="GrabIt — Free Universal Video Downloader">
+  <meta property="og:description"
+    content="Download videos, reels, shorts & audio from 11 platforms. Free, fast, no sign-up.">
+  <meta property="og:url" content="https://grabit-downloader-production-93f2.up.railway.app/">
+  <meta property="og:image" content="https://grabit-downloader-production-93f2.up.railway.app/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="GrabIt — Free Universal Video Downloader">
+  <meta name="twitter:description"
+    content="Download videos, reels, shorts & audio from 11 platforms. Free, fast, no sign-up.">
+  <meta name="twitter:image" content="https://grabit-downloader-production-93f2.up.railway.app/og-image.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
 </head>
 
 <body>
@@ -24,15 +43,19 @@
   <!-- Navigation -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
-      <a href="#" class="nav-logo">
+      <a href="#" class="nav-logo" aria-label="GrabIt home">
         <span class="logo-icon">⚡</span>
         <span class="logo-text">Grab<span class="logo-accent">It</span></span>
       </a>
-      <div class="nav-links">
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="navLinks">
         <a href="#hero" class="nav-link">Home</a>
         <a href="#platforms" class="nav-link">Platforms</a>
         <a href="#features" class="nav-link">Features</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#faq" class="nav-link">FAQ</a>
       </div>
       <div class="nav-status" id="navStatus">
         <span class="status-dot"></span>
@@ -47,7 +70,7 @@
     <div class="hero-content">
       <div class="hero-badge">
         <span class="badge-pulse"></span>
-        <span>🚀 Supports 30+ Platforms</span>
+        <span>🚀 <span id="heroPlatformCount">Supports 11 Platforms</span></span>
       </div>
       <h1 class="hero-title">
         Download <span class="text-gradient">Any Video</span><br>
@@ -66,14 +89,14 @@
             <span>🔗</span>
           </div>
           <input type="url" id="urlInput" class="url-input" placeholder="Paste video URL here..." autocomplete="off"
-            spellcheck="false">
-          <button class="grab-btn" id="grabBtn" disabled>
+            spellcheck="false" aria-label="Paste a video URL from any supported platform">
+          <button class="grab-btn" id="grabBtn" disabled aria-label="Fetch video info">
             <span class="btn-text">Grab It</span>
             <span class="btn-icon">→</span>
           </button>
         </div>
         <div class="input-hint" id="inputHint">
-          Supports YouTube, TikTok, Instagram, Twitter/X, Reddit, Pinterest, Sora 2, and 25+ more
+          YouTube · TikTok · Instagram · Facebook · Reddit · Pinterest · Vimeo · Twitch · Sora 2 · SoundCloud · Imgur
         </div>
       </div>
 
@@ -105,12 +128,7 @@
                   class="marquee-fallback" style="display:none;color:#1877F2">f</span></div><span
                 class="marquee-name">Facebook</span>
             </div>
-            <div class="marquee-item" style="--color:#fff">
-              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/x/white" alt=""
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
-                  class="marquee-fallback" style="display:none;color:#fff">𝕏</span></div><span
-                class="marquee-name">X</span>
-            </div>
+            
             <div class="marquee-item" style="--color:#FF4500">
               <div class="marquee-icon"><img src="https://cdn.simpleicons.org/reddit/FF4500" alt=""
                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
@@ -123,24 +141,9 @@
                   class="marquee-fallback" style="display:none;color:#E60023">📌</span></div><span
                 class="marquee-name">Pinterest</span>
             </div>
-            <div class="marquee-item" style="--color:#fff">
-              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/threads/white" alt=""
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
-                  class="marquee-fallback" style="display:none;color:#fff">@</span></div><span
-                class="marquee-name">Threads</span>
-            </div>
-            <div class="marquee-item" style="--color:#FFFC00">
-              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/snapchat/FFFC00" alt=""
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
-                  class="marquee-fallback" style="display:none;color:#FFFC00">👻</span></div><span
-                class="marquee-name">Snapchat</span>
-            </div>
-            <div class="marquee-item" style="--color:#0A66C2">
-              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/linkedin/0A66C2" alt=""
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
-                  class="marquee-fallback" style="display:none;color:#0A66C2">in</span></div><span
-                class="marquee-name">LinkedIn</span>
-            </div>
+            
+            
+            
             <div class="marquee-item" style="--color:#1AB7EA">
               <div class="marquee-icon"><img src="https://cdn.simpleicons.org/vimeo/1AB7EA" alt=""
                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
@@ -159,26 +162,23 @@
                   class="marquee-fallback" style="display:none;color:#10A37F">✦</span></div><span
                 class="marquee-name">Sora 2</span>
             </div>
-            <div class="marquee-item" style="--color:#85C742">
-              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/rumble/85C742" alt=""
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
-                  class="marquee-fallback" style="display:none;color:#85C742">R</span></div><span
-                class="marquee-name">Rumble</span>
-            </div>
-            <div class="marquee-item" style="--color:#00A1D6">
-              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/bilibili/00A1D6" alt=""
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
-                  class="marquee-fallback" style="display:none;color:#00A1D6">B</span></div><span
-                class="marquee-name">Bilibili</span>
-            </div>
+            
+            
             <div class="marquee-item" style="--color:#FF5500">
               <div class="marquee-icon"><img src="https://cdn.simpleicons.org/soundcloud/FF5500" alt=""
                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
                   class="marquee-fallback" style="display:none;color:#FF5500">☁</span></div><span
                 class="marquee-name">SoundCloud</span>
             </div>
-            <!-- Duplicate for seamless loop -->
-            <div class="hero-marquee-track" aria-hidden="true">
+            <div class="marquee-item" style="--color:#1BB76E">
+              <div class="marquee-icon"><img src="https://cdn.simpleicons.org/imgur/1BB76E" alt=""
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span
+                  class="marquee-fallback" style="display:none;color:#1BB76E">📸</span></div><span
+                class="marquee-name">Imgur</span>
+            </div>
+          </div>
+          <!-- Duplicate for seamless loop -->
+          <div class="hero-marquee-track" aria-hidden="true">
               <div class="marquee-item" style="--color:#FF0000">
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/youtube/FF0000" alt=""><span
                     class="marquee-fallback">▶</span></div><span class="marquee-name">YouTube</span>
@@ -195,10 +195,7 @@
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/facebook/1877F2" alt=""><span
                     class="marquee-fallback">f</span></div><span class="marquee-name">Facebook</span>
               </div>
-              <div class="marquee-item" style="--color:#fff">
-                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/x/white" alt=""><span
-                    class="marquee-fallback">𝕏</span></div><span class="marquee-name">X</span>
-              </div>
+              
               <div class="marquee-item" style="--color:#FF4500">
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/reddit/FF4500" alt=""><span
                     class="marquee-fallback">⬆</span></div><span class="marquee-name">Reddit</span>
@@ -207,18 +204,9 @@
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/pinterest/E60023" alt=""><span
                     class="marquee-fallback">📌</span></div><span class="marquee-name">Pinterest</span>
               </div>
-              <div class="marquee-item" style="--color:#fff">
-                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/threads/white" alt=""><span
-                    class="marquee-fallback">@</span></div><span class="marquee-name">Threads</span>
-              </div>
-              <div class="marquee-item" style="--color:#FFFC00">
-                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/snapchat/FFFC00" alt=""><span
-                    class="marquee-fallback">👻</span></div><span class="marquee-name">Snapchat</span>
-              </div>
-              <div class="marquee-item" style="--color:#0A66C2">
-                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/linkedin/0A66C2" alt=""><span
-                    class="marquee-fallback">in</span></div><span class="marquee-name">LinkedIn</span>
-              </div>
+              
+              
+              
               <div class="marquee-item" style="--color:#1AB7EA">
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/vimeo/1AB7EA" alt=""><span
                     class="marquee-fallback">▷</span></div><span class="marquee-name">Vimeo</span>
@@ -231,34 +219,28 @@
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/openai/10A37F" alt=""><span
                     class="marquee-fallback">✦</span></div><span class="marquee-name">Sora 2</span>
               </div>
-              <div class="marquee-item" style="--color:#85C742">
-                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/rumble/85C742" alt=""><span
-                    class="marquee-fallback">R</span></div><span class="marquee-name">Rumble</span>
-              </div>
-              <div class="marquee-item" style="--color:#00A1D6">
-                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/bilibili/00A1D6" alt=""><span
-                    class="marquee-fallback">B</span></div><span class="marquee-name">Bilibili</span>
-              </div>
+              
+              
               <div class="marquee-item" style="--color:#FF5500">
                 <div class="marquee-icon"><img src="https://cdn.simpleicons.org/soundcloud/FF5500" alt=""><span
                     class="marquee-fallback">☁</span></div><span class="marquee-name">SoundCloud</span>
               </div>
+              <div class="marquee-item" style="--color:#1BB76E">
+                <div class="marquee-icon"><img src="https://cdn.simpleicons.org/imgur/1BB76E" alt=""><span
+                    class="marquee-fallback">📸</span></div><span class="marquee-name">Imgur</span>
+              </div>
             </div>
           </div>
         </div>
+      </div>
   </section>
 
   <!-- Stats Bar -->
   <section class="stats-bar">
     <div class="stats-container">
       <div class="stat-item">
-        <span class="stat-value" data-count="15">0</span>
+        <span class="stat-value" data-count="11" id="statPlatforms">11</span>
         <span class="stat-label">Platforms</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-value" data-count="1000">0</span>
-        <span class="stat-label">Sites Supported</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
@@ -269,6 +251,11 @@
       <div class="stat-item">
         <span class="stat-value">∞</span>
         <span class="stat-label">Free Forever</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">✓</span>
+        <span class="stat-label">Nothing to Install</span>
       </div>
     </div>
   </section>
@@ -345,7 +332,7 @@
           </div>
           <h3 class="feature-title">Universal Support</h3>
           <p class="feature-desc">One tool for everything — videos, reels, shorts, pins, threads, stories, clips, and
-            live streams from 30+ platforms.</p>
+            live streams from <span id="universalPlatformCount">11</span> platforms.</p>
           <div class="feature-tags">
             <span class="feature-tag">Reels</span>
             <span class="feature-tag">Shorts</span>
@@ -371,11 +358,11 @@
             <span class="feature-icon">🔒</span>
             <div class="feature-icon-glow"></div>
           </div>
-          <h3 class="feature-title">100% Private</h3>
-          <p class="feature-desc">Runs locally on your machine. No data sent to third parties. Your downloads stay your
-            business.</p>
+          <h3 class="feature-title">Private by Design</h3>
+          <p class="feature-desc">No account, no sign-up, no tracking. Paste a link, download your video, done —
+            your business stays your business.</p>
           <div class="feature-tags">
-            <span class="feature-tag">Local</span>
+            <span class="feature-tag">No Sign-Up</span>
             <span class="feature-tag">No Tracking</span>
             <span class="feature-tag">Secure</span>
           </div>
@@ -424,6 +411,84 @@
     </div>
   </section>
 
+  <!-- Share Section -->
+  <section class="share-section" id="share">
+    <div class="section-container">
+      <div class="share-card">
+        <h2 class="section-title">Grabbed something good? <span class="text-gradient">Spread the word.</span></h2>
+        <p class="section-subtitle">GrabIt is free forever. The best way to keep it that way is to share it.</p>
+        <div class="share-buttons">
+          <a class="share-btn share-whatsapp" id="shareWhatsApp" href="#" target="_blank" rel="noopener"
+            aria-label="Share GrabIt on WhatsApp">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.1.15.2 2.1 3.2 5.1 4.49.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35M12.04 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.9-9.88a9.83 9.83 0 0 1 9.88 9.89c0 5.45-4.44 9.88-9.89 9.88M20.5 3.49A11.8 11.8 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.9 11.9 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.16-3.44-8.41"/></svg>
+            <span>WhatsApp</span>
+          </a>
+          <a class="share-btn share-x" id="shareX" href="#" target="_blank" rel="noopener" aria-label="Share GrabIt on X">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>
+            <span>X</span>
+          </a>
+          <a class="share-btn share-telegram" id="shareTelegram" href="#" target="_blank" rel="noopener"
+            aria-label="Share GrabIt on Telegram">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M11.94 0A12 12 0 1 0 24 12 12 12 0 0 0 11.94 0Zm5.89 8.13-2.12 10c-.16.72-.58.9-1.18.56l-3.27-2.41-1.58 1.52c-.17.17-.32.32-.65.32l.23-3.29 5.99-5.41c.26-.23-.06-.36-.4-.13L7.4 14.14 4.2 13.13c-.7-.22-.71-.7.15-1.04l12.6-4.86c.58-.22 1.09.13.88.9Z"/></svg>
+            <span>Telegram</span>
+          </a>
+          <a class="share-btn share-facebook" id="shareFacebook" href="#" target="_blank" rel="noopener"
+            aria-label="Share GrabIt on Facebook">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.8-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.09 24 18.1 24 12.07Z"/></svg>
+            <span>Facebook</span>
+          </a>
+          <button class="share-btn share-copy" id="shareCopy" aria-label="Copy GrabIt link">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>Copy Link</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2 class="section-title">Questions, <span class="text-gradient">Answered.</span></h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-question">How do I download a TikTok video without a watermark?</summary>
+          <p class="faq-answer">Paste the TikTok link into the box above and hit Grab It. Turn on the watermark-removal
+            toggle before downloading and you'll get a clean video file, ready to repost or edit.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Is GrabIt really free?</summary>
+          <p class="faq-answer">Yes — every feature is free with no download limits, no account, and no sign-up.
+            There are no premium tiers and no locked qualities.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Can I download YouTube videos in 4K?</summary>
+          <p class="faq-answer">Yes. After pasting a YouTube link, pick 2160p (4K) from the quality list if the video
+            was uploaded in 4K. You can also grab 1080p, 720p, 480p, or audio-only MP3.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Do I need to install an app or extension?</summary>
+          <p class="faq-answer">No. GrabIt runs entirely in your browser — paste a link on any phone, tablet, or
+            computer and download. Nothing to install, nothing to update.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Which sites and platforms are supported?</summary>
+          <p class="faq-answer">YouTube, TikTok, Instagram, Facebook, Reddit, Pinterest, Vimeo, Twitch, Sora 2,
+            SoundCloud, and Imgur — videos, reels, shorts, stories, clips, and audio.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-question">Is it legal to download videos?</summary>
+          <p class="faq-answer">Downloading is fine for your own content or videos the creator allows you to save.
+            Don't re-upload other people's work without permission, and always respect copyright law and each
+            platform's terms of service. GrabIt is strictly for personal use.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
@@ -435,6 +500,11 @@
         This tool is for personal use only. Please respect copyright laws and the terms of service of each platform.
         We do not host, store, or distribute any content.
       </p>
+      <div class="footer-links">
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/terms.html#dmca">DMCA</a>
+      </div>
       <div class="footer-bottom">
         <span>© 2026 GrabIt. Made by killerbhai</span>
       </div>
@@ -443,11 +513,12 @@
 
   <!-- Download Modal -->
   <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="downloadModal">
-      <button class="modal-close" id="modalClose">✕</button>
-      <div class="modal-loading" id="modalLoading">
-        <div class="spinner"></div>
-        <p>Fetching video info...</p>
+    <div class="modal" id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Close dialog">✕</button>
+      <div class="modal-loading" id="modalLoading" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="loadingMainText">Fetching video info...</p>
+        <p class="loading-sub" id="loadingSubText">Talking to the platform — this usually takes 10–60 seconds.</p>
       </div>
       <div class="modal-content" id="modalContent" style="display:none">
         <div class="modal-header">
@@ -494,6 +565,22 @@
             <div class="progress-fill" id="progressFill"></div>
           </div>
           <p class="progress-text" id="progressText">Preparing download...</p>
+          <p class="progress-sub">Keep this tab open — big files take longer.</p>
+        </div>
+
+        <div class="share-nudge" id="shareNudge" style="display:none">
+          <p class="share-nudge-text">Enjoying GrabIt? It's free because people share it 👇</p>
+          <div class="share-nudge-buttons">
+            <button class="share-btn share-whatsapp share-nudge-btn" id="nudgeWhatsApp">
+              <span>WhatsApp</span>
+            </button>
+            <button class="share-btn share-x share-nudge-btn" id="nudgeX">
+              <span>X</span>
+            </button>
+            <button class="share-btn share-copy share-nudge-btn" id="nudgeCopy">
+              <span>Copy Link</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
