@@ -1591,3 +1591,288 @@ a {
 .gallery-thumb:nth-child(4) {
   animation-delay: 0.4s;
 }
+/* ═══════════════════════════════════════════════════════
+   GrabIt v2 — fixes & growth additions
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Mobile nav toggle ──────────────────────────────── */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 10px;
+}
+
+.nav-toggle span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: transform 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
+}
+
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 768px) {
+  .nav-toggle { display: flex; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(10, 10, 26, 0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 24px 20px;
+    gap: 4px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links .nav-link {
+    padding: 12px 4px;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-links .nav-link:last-child { border-bottom: none; }
+}
+
+/* ─── Share section ──────────────────────────────────── */
+.share-section {
+  padding: 80px 24px;
+}
+
+.share-card {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-xl);
+  padding: 48px 32px;
+  box-shadow: var(--shadow-glow);
+}
+
+.share-card .section-title {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.share-whatsapp { background: #25d366; color: #062b16; }
+.share-x { background: #000; border: 1px solid rgba(255, 255, 255, 0.25); }
+.share-telegram { background: #229ed9; }
+.share-facebook { background: #1877f2; }
+.share-copy { background: var(--gradient-main); }
+
+/* ─── FAQ section ────────────────────────────────────── */
+.faq-section {
+  padding: 80px 24px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.faq-list {
+  max-width: 760px;
+  margin: 40px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s var(--ease-out);
+}
+
+.faq-item[open] { border-color: var(--border-accent); }
+
+.faq-question {
+  padding: 18px 22px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.faq-question::-webkit-details-marker { display: none; }
+
+.faq-question::after {
+  content: '+';
+  font-size: 1.4rem;
+  color: var(--accent-blue);
+  flex-shrink: 0;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.faq-item[open] .faq-question::after { transform: rotate(45deg); }
+
+.faq-answer {
+  padding: 0 22px 20px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* ─── Honest loading / progress copy ─────────────────── */
+.loading-sub {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  max-width: 300px;
+}
+
+.progress-sub {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.progress-fill.indeterminate {
+  width: 40% !important;
+  animation: indeterminate-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes indeterminate-slide {
+  0% { margin-left: -40%; }
+  100% { margin-left: 100%; }
+}
+
+/* ─── Post-download share nudge ──────────────────────── */
+.share-nudge {
+  margin-top: 20px;
+  padding: 18px;
+  background: var(--bg-glass);
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--radius-md);
+  text-align: center;
+  animation: nudge-in 0.4s var(--ease-spring);
+}
+
+@keyframes nudge-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.share-nudge-text {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.share-nudge-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.share-nudge-btn {
+  padding: 9px 16px;
+  font-size: 0.82rem;
+}
+
+/* ─── Footer links ───────────────────────────────────── */
+.footer-links {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--text-primary); }
+
+/* ─── Legal pages ────────────────────────────────────── */
+.legal-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 120px 24px 80px;
+}
+
+.legal-page h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.legal-page .legal-updated {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 32px;
+}
+
+.legal-page h2 {
+  font-size: 1.2rem;
+  margin: 28px 0 10px;
+  color: var(--text-primary);
+}
+
+.legal-page p, .legal-page li {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.legal-page ul { padding-left: 22px; }
+
+.legal-page a { color: var(--accent-cyan); }
+
+@media (max-width: 480px) {
+  .share-card { padding: 36px 20px; }
+  .share-card .section-title { font-size: 1.4rem; }
+  .share-btn { padding: 10px 16px; font-size: 0.82rem; }
+}
