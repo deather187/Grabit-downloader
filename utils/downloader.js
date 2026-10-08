@@ -27,8 +27,10 @@ function getCookiesFile() {
 
 /**
  * Base yt-dlp options shared by info + download calls.
- * player_client=android bypasses YouTube's "Sign in to confirm you're not
- * a bot" check that fires on datacenter IPs (Railway/Render/etc).
+ * Tries multiple YouTube player clients to dodge the
+ * "Sign in to confirm you're not a bot" check on datacenter IPs.
+ * If all clients are blocked, authenticated cookies (see getCookiesFile)
+ * are the reliable fallback.
  */
 function baseYtDlpOpts(extra = {}) {
     const opts = {
@@ -36,7 +38,7 @@ function baseYtDlpOpts(extra = {}) {
         noWarnings: true,
         preferFreeFormats: true,
         geoBypass: true,
-        extractorArgs: 'youtube:player_client=android,web',
+        extractorArgs: 'youtube:player_client=android,tv,web',
         addHeader: ['referer:https://www.google.com'],
         ...extra,
     };
