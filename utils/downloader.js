@@ -1,8 +1,69 @@
 const { execFile, execSync } = require('child_process');
 const path = require('path');
+const os = require('os');
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
+
+/**
+ * Resolve an optional YouTube cookies file for bypassing bot checks.
+ * Set YTDLP_COOKIES_PATH to a cookies.txt file, or paste Netscape-format
+ * cookies into the YOUTUBE_COOKIES env var (Railway: Variables tab).
+ */
+let _cookiesFile = null;
+function getCookiesFile() {
+    if (_cookiesFile) return _cookiesFile;
+    if (process.env.YTDLP_COOKIES_PATH && fs.existsSync(process.env.YTDLP_COOKIES_PATH)) {
+        _cookiesFile = process.env.YTDLP_COOKIES_PATH;
+        return _cookiesFile;
+    }
+    if (process.env.YOUTUBE_COOKIES) {
+        _cookiesFile = path.join(os.tmpdir(), 'grabit-youtube-cookies.txt');
+        fs.writeFileSync(_cookiesFile, process.env.YOUTUBE_COOKIES);
+        return _cookiesFile;
+    }
+    return null;
+}
+
+/**
+ * Base yt-dlp options shared by info + download calls.
+ * player_client=android bypasses YouTube's "Sign in to confirm you're not
+ * a bot" check that fires on datacenter IPs (Railway/Render/etc).
+ */
+function baseYtDlpOpts(extra = {}) {
+    const opts = {
+        noCheckCertificates: true,
+        noWarnings: true,
+        preferFreeFormats: true,
+        geoBypass: true,
+        extractorArgs: 'youtube:player_client=android,web',
+        addHeader: ['referer:https://www.google.com'],
+        ...extra,
+    };
+    const cookies = getCookiesFile();
+    if (cookies) opts.cookies = cookies;
+    return opts;
+}
+
+/** Turn raw yt-dlp failures into messages a normal user can understand */
+function friendlyYtDlpError(err) {
+    const msg = err && err.message ? err.message : String(err);
+    if (/sign in to confirm|not a bot/i.test(msg)) {
+        return 'YouTube is blocking automated requests from our server right now. Please try again in a few minutes, or try a different platform.';
+    }
+    if (/private video|login required/i.test(msg)) {
+        return 'This video is private or requires login, so it can\u2019t be downloaded.';
+    }
+    if (/video unavailable|removed|deleted/i.test(msg)) {
+        return 'This video is unavailable or has been removed.';
+    }
+    if (/unsupported url|no video/i.test(msg)) {
+        return 'Couldn\u2019t find a video at that link. Double-check the URL.';
+    }
+    // Fall back to a trimmed version of the raw error (no binary paths)
+    const clean = msg.replace(/^[^\n]*?bin\/yt-dlp[^\n]*\n?/, '').trim();
+    return clean.substring(0, 220) || 'Failed to fetch video info';
+}
 
 /**
  * Get video info/metadata from a URL
@@ -17,16 +78,11 @@ async function getVideoInfo(url) {
         // Fall through to yt-dlp if custom scraper fails
     }
 
-    // Try yt-dlp with normal extractor
+    // Try yt-dlp with normal extractor (android player client bypasses bot checks)
     try {
-        const output = await ytdlp(url, {
+        const output = await ytdlp(url, baseYtDlpOpts({
             dumpSingleJson: true,
-            noCheckCertificates: true,
-            noWarnings: true,
-            preferFreeFormats: true,
-            geoBypass: true,
-            addHeader: ['referer:https://www.google.com'],
-        });
+        }));
         return {
             success: true,
             data: {
@@ -44,17 +100,14 @@ async function getVideoInfo(url) {
     } catch (err1) {
         // Retry with generic extractor as fallback
         try {
-            const output = await ytdlp(url, {
+            const output = await ytdlp(url, baseYtDlpOpts({
                 dumpSingleJson: true,
-                noCheckCertificates: true,
-                noWarnings: true,
                 forceGenericExtractor: true,
-                geoBypass: true,
                 addHeader: [
                     'referer:https://www.google.com',
                     'User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
                 ],
-            });
+            }));
             return {
                 success: true,
                 data: {
@@ -72,7 +125,7 @@ async function getVideoInfo(url) {
         } catch (err2) {
             return {
                 success: false,
-                error: err1.message || 'Failed to fetch video info',
+                error: friendlyYtDlpError(err1),
             };
         }
     }
@@ -277,16 +330,13 @@ async function downloadVideo(url, formatId, outputDir, videoInfo) {
     const ytdlp = require('yt-dlp-exec');
     const outputTemplate = path.join(outputDir, '%(title)s.%(ext)s');
 
-    const opts = {
+    const opts = baseYtDlpOpts({
         output: outputTemplate,
-        noCheckCertificates: true,
-        noWarnings: true,
-        geoBypass: true,
         addHeader: [
             'referer:https://www.google.com',
             'User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
         ],
-    };
+    });
 
     if (formatId === 'bestaudio') {
         opts.extractAudio = true;
@@ -327,7 +377,7 @@ async function downloadVideo(url, formatId, outputDir, videoInfo) {
         } catch (err2) {
             return {
                 success: false,
-                error: err1.message || 'Download failed',
+                error: friendlyYtDlpError(err1),
             };
         }
     }
