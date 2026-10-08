@@ -32,6 +32,21 @@ const progressText = $('#progressText');
 const toastContainer = $('#toastContainer');
 const navbar = $('#navbar');
 
+// ─── Monetization ─────────────────────────────────────────
+// Set your VPN affiliate link here to show the promo banner.
+// Leave as '' to keep it hidden until you join a program.
+const AFFILIATE_VPN_URL = '';
+
+function initAffiliate() {
+    if (!AFFILIATE_VPN_URL) return;
+    const section = $('#vpn-promo');
+    const link = $('#affiliateVpnLink');
+    if (section && link) {
+        link.href = AFFILIATE_VPN_URL;
+        section.hidden = false;
+    }
+}
+
 // ─── Init ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initParticles();
@@ -43,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWatermarkToggle();
     initNavToggle();
     initShareButtons();
+    initAffiliate();
     checkServerHealth();
 });
 
