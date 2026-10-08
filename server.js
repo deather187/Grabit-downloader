@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -10,6 +12,65 @@ const { removeWatermark, checkFFmpeg } = require('./utils/watermark');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const TEMP_DIR = path.join(__dirname, 'temp');
+
+// Behind Railway/Render's edge proxy — needed so rate limiting sees real client IPs
+app.set('trust proxy', 1);
+
+// Security headers + hide framework fingerprint
+app.disable('x-powered-by');
+app.use(helmet({
+    contentSecurityPolicy: false, // frontend uses inline scripts; tune before enabling
+    crossOriginEmbedderPolicy: false,
+}));
+
+// ─── Rate limiting (protects bandwidth bill) ──────────────────
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 60,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, error: 'Too many requests — please slow down a bit.' },
+});
+const downloadLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, error: 'Download limit reached. Try again in an hour.' },
+});
+app.use('/api/', apiLimiter);
+app.use('/api/download', downloadLimiter);
+
+// ─── In-memory cache for /api/info (10 min TTL) ───────────────
+const infoCache = new Map();
+const INFO_CACHE_TTL_MS = 10 * 60 * 1000;
+const INFO_CACHE_MAX = 500;
+
+function getCachedInfo(url) {
+    const hit = infoCache.get(url);
+    if (hit && hit.expires > Date.now()) return hit.data;
+    infoCache.delete(url);
+    return null;
+}
+
+function setCachedInfo(url, data) {
+    if (infoCache.size >= INFO_CACHE_MAX) {
+        infoCache.delete(infoCache.keys().next().value); // evict oldest
+    }
+    infoCache.set(url, { data, expires: Date.now() + INFO_CACHE_TTL_MS });
+}
+
+/** Race a promise against a timeout so slow platforms can't hang requests forever */
+function withTimeout(promise, ms, message) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(message)), ms);
+    });
+    return Promise.race([
+        Promise.resolve(promise).finally(() => clearTimeout(timer)),
+        timeout,
+    ]);
+}
 
 // Ensure temp directory exists
 if (!fs.existsSync(TEMP_DIR)) {
@@ -50,13 +111,23 @@ app.post('/api/info', async (req, res) => {
         return res.status(400).json({ success: false, error: 'URL is required' });
     }
 
+    // Serve repeat lookups from cache — extraction is the slow part (~10-60s)
+    const cached = getCachedInfo(url);
+    if (cached) {
+        return res.json(cached);
+    }
+
     const platform = detectPlatform(url);
 
     try {
         let resultInfo = null;
         let isSuccess = false;
 
-        const info = await getVideoInfo(url);
+        const info = await withTimeout(
+            getVideoInfo(url),
+            90000,
+            'The platform took too long to respond. Please try again.'
+        );
 
         if (info.success && info.data.formats && info.data.formats.length > 0) {
             resultInfo = info;
@@ -69,6 +140,7 @@ app.post('/api/info', async (req, res) => {
             resultInfo.data.platform = platform
                 ? { id: platform.id, name: platform.name, icon: platform.icon, color: platform.color, hasWatermark: !!platform.watermarkPosition }
                 : { id: 'unknown', name: 'Unknown', icon: '🌐', color: '#888888', hasWatermark: false };
+            setCachedInfo(url, resultInfo);
             res.json(resultInfo);
         } else {
             res.status(422).json(resultInfo);
@@ -93,8 +165,15 @@ app.post('/api/download', async (req, res) => {
     fs.mkdirSync(sessionDir, { recursive: true });
 
     try {
-        // First get video info to check for direct URLs (Sora 2, scraped)
-        const videoInfo = await getVideoInfo(url);
+        // Reuse cached info when available — avoids a second slow extraction
+        const cachedInfo = getCachedInfo(url);
+        const videoInfo = cachedInfo
+            ? { success: true, data: cachedInfo.data }
+            : await withTimeout(
+                getVideoInfo(url),
+                90000,
+                'The platform took too long to respond. Please try again.'
+            );
         const infoData = videoInfo.success ? videoInfo.data : null;
 
         // Download the video
@@ -151,38 +230,9 @@ app.get('/api/health', async (req, res) => {
     });
 });
 
-/**
- * GET /api/proxy — proxy image downloads to bypass CORS
- */
-app.get('/api/proxy', async (req, res) => {
-    const targetUrl = req.query.url;
-    const name = req.query.name || 'image';
-    if (!targetUrl) return res.status(400).send('No URL provided');
-
-    const https = require('https');
-    const http = require('http');
-    const client = targetUrl.startsWith('https') ? https : http;
-
-    const options = {
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-            // Gallery-dl urls sometimes require the exact referer
-            'Referer': targetUrl
-        }
-    };
-
-    client.get(targetUrl, options, (proxyRes) => {
-        if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
-            // Handle redirect
-            return res.redirect(proxyRes.headers.location);
-        }
-        res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'image/jpeg');
-        res.setHeader('Content-Disposition', `attachment; filename="${name}.jpg"`);
-        proxyRes.pipe(res);
-    }).on('error', (err) => {
-        res.status(500).send('Error proxying image');
-    });
-});
+// NOTE: /api/proxy was removed — it was an unused open proxy (arbitrary
+// server-side URL fetching) and a bandwidth-abuse vector. Re-add with an
+// allowlist if image proxying is ever actually needed.
 
 // ─── Utilities ──────────────────────────────────────────────
 

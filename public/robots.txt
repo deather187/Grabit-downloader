@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://grabit-downloader-production-93f2.up.railway.app/sitemap.xml

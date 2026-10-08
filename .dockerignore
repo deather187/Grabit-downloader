@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+temp
+.git
+.gitignore
+.env
+*.log
+.DS_Store
+test_*.mp4
+test_output*.txt
